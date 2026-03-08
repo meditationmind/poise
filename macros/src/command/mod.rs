@@ -238,14 +238,14 @@ pub fn command(
 
     let install_context = if let Some(contexts) = &args.install_context {
         let contexts = contexts.iter();
-        syn::parse_quote! { Some(vec![ #(#krate::serenity_prelude::InstallationContext::#contexts),* ]) }
+        syn::parse_quote! { Some(Cow::Borrowed(&[ #(#krate::serenity_prelude::InstallationContext::#contexts),* ])) }
     } else {
         syn::parse_quote! { None }
     };
 
     let interaction_context = if let Some(contexts) = &args.interaction_context {
         let contexts = contexts.iter();
-        syn::parse_quote! { Some(vec![ #(#krate::serenity_prelude::InteractionContext::#contexts),* ]) }
+        syn::parse_quote! { Some(Cow::Borrowed(&[ #(#krate::serenity_prelude::InteractionContext::#contexts),* ])) }
     } else {
         syn::parse_quote! { None }
     };
@@ -273,7 +273,7 @@ fn generate_command(mut inv: Invocation) -> Result<proc_macro2::TokenStream, dar
         _ => {
             return Err(
                 syn::Error::new(inv.function.sig.span(), "expected a Context parameter").into(),
-            )
+            );
         }
     };
     // Needed because we're not allowed to have lifetimes in the hacky use case below
