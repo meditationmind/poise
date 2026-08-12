@@ -120,6 +120,13 @@ pub fn generate_parameters(inv: &Invocation) -> Result<Vec<proc_macro2::TokenStr
             None => quote::quote! { None },
         };
 
+        let file_types = match &param.args.file_types {
+            Some(crate::util::List(file_types)) => quote::quote! { Some(
+                Cow::Borrowed(&[ #( Cow::Borrowed(#file_types) ),* ])
+            ) },
+            None => quote::quote! { None },
+        };
+
         parameter_structs.push((
             quote::quote! {
                 #krate::CommandParameter {
@@ -129,6 +136,7 @@ pub fn generate_parameters(inv: &Invocation) -> Result<Vec<proc_macro2::TokenStr
                     description_localizations: #desc_localizations,
                     required: #required,
                     channel_types: #channel_types,
+                    file_types: #file_types,
                     type_setter: #type_setter,
                     choices: #choices,
                     autocomplete_callback: #autocomplete_callback,
