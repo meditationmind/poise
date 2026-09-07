@@ -172,7 +172,7 @@ fn parse_prefix_params(
                     #empty
                 } else {
                     let #token =
-                        <#ty as #krate::serenity_prelude::ArgumentConvert>::convert(
+                        <#ty as #krate::ArgumentConvert>::convert(
                             serenity_ctx,
                             msg.guild_id,
                             Some(msg.channel_id),
