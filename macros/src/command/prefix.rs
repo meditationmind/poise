@@ -1,6 +1,7 @@
-use super::{CommandParameter, Invocation, unwrap_generic};
 use quote::format_ident;
 use syn::spanned::Spanned as _;
+
+use super::{CommandParameter, Invocation, unwrap_generic};
 
 enum Modifier {
     Lazy,
@@ -17,12 +18,7 @@ struct PrefixParameter<'a> {
 }
 
 fn get_modifier(param: &CommandParameter) -> Result<Option<Modifier>, syn::Error> {
-    match (
-        param.args.lazy,
-        param.args.rest,
-        param.args.flag,
-        param.args.string,
-    ) {
+    match (param.args.lazy, param.args.rest, param.args.flag, param.args.string) {
         (false, false, false, false) => Ok(None),
         (true, false, false, false) => Ok(Some(Modifier::Lazy)),
         (false, true, false, false) => Ok(Some(Modifier::Rest)),
@@ -30,12 +26,9 @@ fn get_modifier(param: &CommandParameter) -> Result<Option<Modifier>, syn::Error
             if param.type_ == syn::parse_quote! { bool } {
                 Ok(Some(Modifier::Flag))
             } else {
-                Err(syn::Error::new(
-                    param.type_.span(),
-                    "Must use bool for flags",
-                ))
+                Err(syn::Error::new(param.type_.span(), "Must use bool for flags"))
             }
-        }
+        },
         (false, false, false, true) => Ok(Some(Modifier::String)),
         _ => Err(syn::Error::new(
             param.span,
@@ -45,7 +38,7 @@ fn get_modifier(param: &CommandParameter) -> Result<Option<Modifier>, syn::Error
 }
 
 fn parse_prefix_params(
-    params: &[PrefixParameter],
+    params: &[PrefixParameter<'_>],
     krate: &syn::Path,
 ) -> Result<(proc_macro2::TokenStream, Vec<syn::Type>), syn::Error> {
     let Some((first, rest)) = params.split_first() else {
@@ -148,14 +141,10 @@ fn parse_prefix_params(
                     "can only decorate `Option<T>` or `Vec<T>` with #[lazy]",
                 ));
             }
-        }
+        },
         Some(Modifier::Rest) => {
             let (ty, found, empty) = if let Some(ty) = unwrap_generic(ty, "Option") {
-                (
-                    ty,
-                    quote::quote! { Ok((Some(#token),)) },
-                    quote::quote! { Ok((None,)) },
-                )
+                (ty, quote::quote! { Ok((Some(#token),)) }, quote::quote! { Ok((None,)) })
             } else {
                 (
                     ty,
@@ -184,7 +173,7 @@ fn parse_prefix_params(
                     #found
                 }
             }
-        }
+        },
         Some(Modifier::Flag) => {
             // Parse `#[flag] name: bool` by checking for the string "name" and converting to `true`
             // if present and `false` otherwise.
@@ -230,7 +219,7 @@ fn parse_prefix_params(
                         })?;
                 Ok((#token, #( #parsed_tokens, )* ))
             }
-        }
+        },
         Some(Modifier::String) => {
             // Parse a type which implements `FromStr` yet doesn't implement `ArgumentConvert`.
             if let Some(ty) = unwrap_generic(ty, "Option") {
@@ -299,7 +288,7 @@ fn parse_prefix_params(
                     Ok((#token, #( #parsed_tokens, )* ))
                 }
             }
-        }
+        },
         None => {
             // Parse a parameter with no modifiers decorating it.
             if let Some(ty) = unwrap_generic(ty, "Option") {
@@ -389,7 +378,7 @@ fn parse_prefix_params(
                     Ok((#token, #( #parsed_tokens, )* ))
                 }
             }
-        }
+        },
     };
 
     parsed_types.insert(0, ty.clone());
@@ -398,9 +387,8 @@ fn parse_prefix_params(
 
 pub fn generate_prefix_action(inv: &Invocation) -> Result<proc_macro2::TokenStream, syn::Error> {
     let krate = &inv.krate;
-    let param_idents = (0..inv.parameters.len())
-        .map(|i| format_ident!("poise_param_{i}"))
-        .collect::<Vec<_>>();
+    let param_idents =
+        (0..inv.parameters.len()).map(|i| format_ident!("poise_param_{i}")).collect::<Vec<_>>();
 
     let mut params = inv
         .parameters
@@ -437,7 +425,7 @@ pub fn generate_prefix_action(inv: &Invocation) -> Result<proc_macro2::TokenStre
             modifier: Some(Modifier::Rest),
             ty: syn::parse_quote! { Option<String> },
             name: "rest",
-        })
+        });
     }
 
     let (parsed_params, _) = parse_prefix_params(&params, krate)?;
