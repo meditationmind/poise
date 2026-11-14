@@ -3,7 +3,10 @@ use syn::spanned::Spanned as _;
 
 use super::{CommandParameter, Invocation, unwrap_generic};
 use crate::util::{
-    extract_type_parameter, iter_tuple_2_to_vec_map, tuple_2_iter_deref, wrap_option_to_string,
+    extract_type_parameter,
+    iter_tuple_2_to_vec_map,
+    tuple_2_iter_deref,
+    wrap_option_to_string,
 };
 
 fn lit_to_string(lit: &syn::Lit) -> Result<String, syn::Error> {

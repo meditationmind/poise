@@ -56,8 +56,8 @@ use proc_macro::TokenStream;
 /// - `identifying_name`: Optionally, a unique identifier for this command for your personal usage
 /// - `install_context`: Installation contexts where this command is available (slash-only)
 /// - `interaction_context`: Interaction contexts where this command is available (slash-only)
-/// - `crate`: Path to poise, for crates that re-export it `crate = "my_crate::poise"`
-///   (default: `::poise`)
+/// - `crate`: Path to poise, for crates that re-export it `crate = "my_crate::poise"` (default:
+///   `::poise`)
 ///
 /// ## Checks
 ///

@@ -371,7 +371,8 @@ pub async fn execute_modal_on_component_interaction<M: Modal>(
 /// You don't need to implement this trait manually; use `#[derive(poise::Modal)]` instead.
 /// See [`Modal`][crate::macros::Modal] for details.
 ///
-/// If poise is re-exported by another crate, add `#[poise(crate = "my_crate::poise")]` to the struct
+/// If poise is re-exported by another crate, add `#[poise(crate = "my_crate::poise")]` to the
+/// struct.
 ///
 /// # Example
 ///

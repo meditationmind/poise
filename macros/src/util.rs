@@ -123,7 +123,5 @@ struct DeriveArgs {
 pub fn derive_crate_path(input: &syn::DeriveInput) -> Result<syn::Path, darling::Error> {
     let args = <DeriveArgs as darling::FromDeriveInput>::from_derive_input(input)?;
 
-    Ok(args
-        .crate_path
-        .unwrap_or_else(|| syn::parse_quote! { poise }))
+    Ok(args.crate_path.unwrap_or_else(|| syn::parse_quote! { poise }))
 }

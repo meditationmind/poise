@@ -195,7 +195,7 @@ pub fn modal(input: syn::DeriveInput) -> Result<TokenStream, darling::Error> {
             });
 
             parsers.push(quote::quote! {
-                #field_ident: poise::find_modal_data(&mut data, stringify!(#field_ident))
+                #field_ident: #krate::find_modal_data(&mut data, stringify!(#field_ident))
                     .attachments
                     #ok_or,
             });
@@ -222,7 +222,7 @@ pub fn modal(input: syn::DeriveInput) -> Result<TokenStream, darling::Error> {
             });
 
             parsers.push(quote::quote! {
-                #field_ident: poise::find_modal_data(&mut data, stringify!(#field_ident)).checked,
+                #field_ident: #krate::find_modal_data(&mut data, stringify!(#field_ident)).checked,
             });
 
             continue;
@@ -286,7 +286,7 @@ pub fn modal(input: syn::DeriveInput) -> Result<TokenStream, darling::Error> {
             });
 
             parsers.push(quote::quote! {
-                #field_ident: poise::find_modal_data(&mut data, stringify!(#field_ident))
+                #field_ident: #krate::find_modal_data(&mut data, stringify!(#field_ident))
                     .radio_option
                     #ok_or,
             });
@@ -363,7 +363,7 @@ pub fn modal(input: syn::DeriveInput) -> Result<TokenStream, darling::Error> {
             });
 
             parsers.push(quote::quote! {
-                #field_ident: poise::find_modal_data(&mut data, stringify!(#field_ident))
+                #field_ident: #krate::find_modal_data(&mut data, stringify!(#field_ident))
                     .checkbox_options
                     #ok_or,
             });
@@ -600,7 +600,7 @@ pub fn modal(input: syn::DeriveInput) -> Result<TokenStream, darling::Error> {
             });
 
             parsers.push(quote::quote! {
-                #field_ident: poise::find_modal_data(&mut data, stringify!(#field_ident))
+                #field_ident: #krate::find_modal_data(&mut data, stringify!(#field_ident))
                     #kind
                     #ok_or,
             });
